@@ -1,0 +1,449 @@
+@font-face {
+    font-family: "Arial Rounded MT Bold";
+    src: url("./ARLRDBD.TTF");
+}
+
+* {
+    font-family: Arial Rounded MT Bold;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --danger: #CC0000;
+}
+
+.headerSlot {
+    background: linear-gradient(58.77deg, #984DE1 -30.65%, #FF0000 105.49%);
+    z-index: 2;
+    border-bottom-left-radius: 50px;
+    box-shadow: 0 0 0 0;
+}
+
+.userInfoTab {
+    display: flex;
+    padding: 10px;
+    color: #fff;
+}
+
+.nameSide h6,
+.nameSide h1 {
+    padding: 0;
+    margin: 0;
+    padding-left: 12px;
+}
+
+.nameSide h6 {
+    margin-top: 31px;
+    border-radius: 0 0px 0px 51px;
+
+}
+
+.toolbar-title-default .ios .in-toolbar {
+    z-index: 9;
+    --background: transparent;
+    --border: none;
+    --background: linear-gradient(58.77deg, #984DE1 -30.65%, #FF0000 105.49%);
+
+}
+
+/*body*/
+body,
+ion-page {
+    background: #f5efef;
+}
+
+ion-button {
+    width: 100%;
+    height: 50px;
+    top: 447px;
+    left: 20px;
+    gap: 0px;
+    border-radius: 10px 0px 0px 0px;
+    opacity: 0px;
+}
+
+.container {
+    padding: 10px;
+}
+
+.btn-danger {
+    --background: var(--danger);
+    background: var(--danger);
+}
+
+.py-5 {
+    margin-top: 14%;
+}
+
+.toolbar-title-default .ios .in-toolbar {
+    --background: transparent;
+    --border-color: transparent;
+
+}
+
+/*LogIn Form*/
+.logInForm {
+    padding: 5%;
+    padding-top: 30%;
+}
+
+.logInForm h3,
+.sub-heading {
+    font-family: Arial Rounded MT Bold;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 28.93px;
+    text-align: left;
+    color: #ABACAD;
+    padding: 0;
+}
+
+.sub-text {
+    color: #ABACAD;
+    padding: 4px 0;
+}
+
+.logo {
+    width: 45%;
+}
+
+.input-field {
+    margin: 10% 0;
+    box-shadow: 0 0 0 silver;
+    border: 1px solid #fcfcfc;
+   
+}
+
+.input-field .label-text-wrapper .sc-ion-input-ios {
+    color: #ABACAD;
+}
+
+.input-field-card {
+    padding: 5px;
+    margin: 2% 0;
+    box-shadow: 0 0 0 0;
+    --background: #F0F0F0;
+    border: 1px solid #F0F0F0;
+}
+
+.input-field-card .label-text-wrapper .sc-ion-input-ios label {
+    color: #F0F0F0;
+}
+
+.term-text {
+    text-align: justify !important;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 29px;
+    text-align: left;
+    color: #707070;
+
+}
+
+
+.taskNum1 {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.homePage_task {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 18px;
+}
+
+.clockInButton {
+    width: 100px;
+    height: 100px;
+
+    text-align: center;
+    color: #fff;
+    --background: linear-gradient(49.41deg, #984DE1 -8.08%, #FF0000 96.62%);
+
+    --border-radius: 50%;
+}
+
+.clockInButton . .button-inner {
+    display: block !important;
+
+}
+
+.clockOutBorder {
+    max-width: 193px;
+    max-height: 193px;
+    background: linear-gradient(49.41deg, #984DE1 -8.08%, #FF0000 96.62%);
+    padding: -3px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.clockOutButton {
+    height: 190px;
+    width: 190px;
+    text-align: center;
+    color: #343434;
+    /* --background: linear-gradient(49.41deg, #984DE1 -8.08%, #FF0000 96.62%); */
+    --background: #fff;
+    --border: 2px linear-gradient(49.41deg, #984DE1 -8.08%, #FF0000 96.62%);
+    --border-radius: 50%;
+    padding: 2px;
+}
+
+.clockOutButton .button-native .button-inner {
+    display: block !important;
+
+}
+
+.text-center {
+    text-align: center;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+
+
+}
+
+.menuItem .imgSection {
+    width: 40px;
+    color: #707070;
+
+}
+
+
+.menu-text {
+    padding-left: 10px;
+    color: #707070;
+
+}
+
+.ml-30 {
+    margin-left: -30px;
+    padding: 8px 0;
+}
+
+.menu-logo {
+    width: 44%;
+}
+
+.rewardText {
+
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 17.36px;
+    text-align: left;
+    padding-left: 10px;
+    margin-bottom: 0;
+
+
+}
+
+.rewardTime {
+    font-family: Arial Rounded MT Bold;
+    font-size: 15px;
+    font-weight: 400;
+
+
+    padding-left: 10px;
+    color: #707070;
+    margin-top: 5px;
+}
+
+.notification {
+    background: #D9D9D9;
+    padding: 3px;
+    margin-top: 10px;
+    border-radius: 5px;
+
+}
+
+.notification-btn {
+    border-radius: 37px !important;
+    --border-radius: 37px !important;
+    width: 77px;
+    font-size: 12px;
+    padding: 0;
+    height: 35px;
+    color: #000;
+    --background: #D9D9D9;
+}
+
+.plusBtn {
+    border-radius: 7px !important;
+    --border-radius: 7px !important;
+    width: 77px;
+    font-size: 12px;
+    padding: 0;
+    height: 35px;
+    color: #000;
+    --background: #ffffff;
+}
+
+.inputForProfile label {
+    color: #707070;
+}
+
+.editProfile {
+    border: 1px solid #A73131;
+    color: #A73131;
+    padding: 7px;
+    border-radius: 11px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.text-danger {
+    color: #A73131;
+}
+
+.purchase-input label,
+.purchase-input .label-text {
+    color: #ABACAD !important;
+
+}
+
+.purchase-input {
+    padding: 0px;
+    margin: 8px 0 0 5px;
+}
+
+.silver-card {
+    background-color: #D9D9D9;
+
+    --border-radius: 10px 10xp 10px 10px;
+    border-radius: 10px 10xp 10px 10px;
+    box-shadow: 0 0 0 0;
+   
+}
+
+.silver-card li b {
+    color: #000;
+
+    gap: 0px;
+    opacity: 0px;
+
+}
+
+.silver-card ul {
+    padding: 5px;
+    list-style: none;
+}
+
+.silver-card li {
+    color: #707070;
+    padding: 5px 0;
+}
+
+.btn-green {
+    background-color: #00CE15;
+    text-align: center;
+    color: #fff !important;
+    width: 80px;
+    border-radius: 5px;
+    float: right;
+    padding: 5px 0;
+}
+
+.btn-orange {
+    background-color: #FF9900;
+    text-align: center;
+    color: #fff !important;
+    width: 80px;
+    border-radius: 5px;
+    float: right;
+    padding: 5px 0;
+}
+
+.btn-blue {
+    background-color: #622EEF;
+    text-align: center;
+    color: #fff !important;
+    width: 100px;
+    padding: 5px 0;
+    border-radius: 5px;
+    float: right;
+}
+.btn-sky {
+    background-color: #2ebbef;
+    text-align: center;
+    color: #fff !important;
+    width: 120px;
+    padding: 5px 0;
+    border-radius: 5px;
+    float: right;
+}
+.btn-red {
+    background-color: var(--danger);
+    text-align: center;
+    color: #fff !important;
+    width: 120px;
+    padding: 5px 0;
+    border-radius: 5px;
+    float: right;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.btn-danger-scan {
+    padding: 0;
+    margin: 0;
+    width: 137px;
+    height: 30px;
+    --background: red
+}
+.sweetAlert{
+    background: #05a605d4;
+    color: #fff;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    align-items: center;
+    width: 92%;
+    top: 10%;
+}
+
+.sweetText{
+    color: #fff;
+    margin-left: 15PX;
+    font-size: 18px;
+}
+
+
+
+.btnsondelivery{
+    text-align: center;
+}
+
+
+.paymentInstruction {
+   padding: 10px 0;
+}
+.readMore{
+    color: blue;
+    text-transform: lowercase;
+}

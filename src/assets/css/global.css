@@ -1,0 +1,86 @@
+/* Set variables for all modes */
+:root {
+  /* Set the background of the entire app */
+  --ion-background-color: #F5F5F5;
+
+  /* Set the font family of the entire app */
+  --ion-font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+
+  /* default colors */
+  --ion-color-primary: #bd9b36;
+  --ion-color-tertiary: #dcb646;
+  --ion-color-secondary: #3dc2ff;
+  --ion-color-success: #2dd36f;
+  --ion-color-warning: #ffc409;
+  --ion-color-danger: #eb445a;
+  --ion-color-dark: #222428;
+  --ion-color-medium: #92949c;
+  --ion-color-light: #f4f5f8;
+  --ion-color-white: #ffffff;
+  --ion-color-black: #000000;
+  --ion-color-disabled: #A0A0A0;
+}
+
+ion-button {
+  --background: linear-gradient(90deg, var(--ion-color-tertiary) 7.33%, var(--ion-color-primary) 90.67%);
+  --border-radius: 50px;
+  --color: var(--ion-color-white);
+  height: 60px;
+}
+
+ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-card {
+  background: var(--ion-color-white);
+}
+
+ion-card-header {
+  font-size: 20px;
+  font-weight: 400;
+  --color: var(--ion-color-black);
+}
+
+ion-label {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+ion-checkbox {
+  border-radius: 3px;
+  width: 20px;
+  height: 20px;
+}
+
+.sc-ion-input-ios-h {
+  color : var(--ion-color-primary);
+}
+.native-input {
+  color: var(--ion-color-black) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ion-color-primary);
+}
+h2 {
+  font-weight: 600;
+  font-size: 30px;
+}
+
+/* Set text color of the entire app for iOS only */
+.ios {
+  --ion-text-color: var(--ion-color-black);
+}
+
+/* Set text color of the entire app for Material Design only */
+.md {
+  --ion-text-color: #var(--ion-color-black);;
+}
+body {
+  background: transparent !important;
+}
+ion-app {
+  background: transparent !important;
+}

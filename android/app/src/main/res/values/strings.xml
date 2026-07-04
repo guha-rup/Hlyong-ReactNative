@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">HL YONG</string>
+    <string name="title_activity_main">HL YONG</string>
+    <string name="package_name">hlyong.com.prod</string>
+    <string name="custom_url_scheme">hlyong.com.prod</string>
+</resources>

@@ -1,0 +1,7 @@
+{
+  "name": "HL YONG",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
