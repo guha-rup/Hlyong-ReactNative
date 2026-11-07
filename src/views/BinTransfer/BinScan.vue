@@ -84,6 +84,7 @@
         <input 
           ref="machineInputCatcher" 
           type="text" 
+          placeholder="Scan or Type here..."
           class="hidden-machine-catcher"
           @keyup.enter="handleMachineScan"
           @blur="refocusIfActive"
@@ -95,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, nextTick } from 'vue';
+import { defineComponent, ref, nextTick,onMounted } from 'vue';
 import { IonButton, IonInput, IonSelect, IonSelectOption, IonIcon, alertController } from '@ionic/vue';
 import { businessOutline, searchOutline, barcodeOutline, cameraOutline, personCircleOutline } from 'ionicons/icons';
 import { useRouter } from "vue-router";
@@ -120,6 +121,11 @@ export default defineComponent({
       localStorage.removeItem("scanDatanew");
       localStorage.removeItem("scanDatanew_data");
     };
+    onMounted(() => {
+      setTimeout(() => {
+        activateMachineSensor();
+      }, 400); // 400ms delay ensures the page is ready
+    });
 
     // 1. Activate Machine Sensor: Focuses the hidden box so the laser can "type"
     const activateMachineSensor = () => {
@@ -147,6 +153,9 @@ export default defineComponent({
       const val = event.target.value;
       if (val) {
         isLaserReady.value = false;
+          if (event.target) {
+          event.target.blur();
+    }
         processFinalData(val.trim().toUpperCase());
         event.target.value = ""; // Clear for next time
       }
@@ -206,12 +215,26 @@ export default defineComponent({
 /* The Hidden Input: Invisible but captures hardware laser data */
 .hidden-machine-catcher {
     position: fixed;
-    top: -100px;
-    left: -100px;
+    top: -1000px; 
+    left: -1000px;
     opacity: 0;
     width: 1px;
     height: 1px;
     z-index: -1;
+}
+ .visible-machine-catcher {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    margin: 10px auto;
+    padding: 12px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: white;
+    color: #0F172A;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
 }
 
 .slim-executive-header {

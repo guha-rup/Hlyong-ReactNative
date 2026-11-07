@@ -1,6 +1,6 @@
 <template>
   <Master>
-    <div class="terminal-scanner-root">
+    <div class="terminal-scanner-root" @click="refocusIfActive">
       
       <!-- Top Navigation -->
       <header class="scanner-nav">
@@ -8,8 +8,11 @@
           <ion-icon :icon="chevronBackOutline"></ion-icon>
         </div>
         <div class="status-indicator">
-          <div class="status-dot"></div>
-          <span class="status-text">SENSOR READY</span>
+          <!-- Status indicator changes color based on laser readiness -->
+          <div class="status-dot" :style="{ backgroundColor: isLaserReady ? '#10b981' : '#f59e0b', boxShadow: isLaserReady ? '0 0 8px #10b981' : '0 0 8px #f59e0b' }"></div>
+          <span class="status-text" :style="{ color: isLaserReady ? '#10b981' : '#f59e0b' }">
+            {{ isLaserReady ? 'SENSOR READY' : 'STANDBY' }}
+          </span>
         </div>
       </header>
 
@@ -25,8 +28,8 @@
             <h1 class="main-title">Scan {{ getStepLabel }}</h1>
           </div>
 
-          <!-- High-Tech Scanner Frame (Clickable) -->
-          <div class="scanner-viz-container" @click="startCameraScan">
+          <!-- High-Tech Scanner Frame (CLICK TO ACTIVATE HARDWARE SCANNER) -->
+          <div class="scanner-viz-container" :class="{ 'laser-active': isLaserReady }" @click.stop="activateMachineSensor">
             <div class="scanner-frame-mini">
               <!-- Decorative Corners -->
               <div class="corner tl"></div>
@@ -34,20 +37,28 @@
               <div class="corner bl"></div>
               <div class="corner br"></div>
               
-              <!-- Animated Laser -->
-              <div class="laser-scanner">
+              <!-- Animated Laser (Only shows when ready to scan) -->
+              <div class="laser-scanner" v-if="isLaserReady">
                 <div class="laser-line"></div>
                 <div class="laser-glow"></div>
               </div>
 
               <!-- Central Icon -->
-              <ion-icon :icon="getStepIcon" class="center-icon"></ion-icon>
+              <ion-icon :icon="getStepIcon" class="center-icon" :class="{'pulse-icon': isLaserReady}"></ion-icon>
             </div>
           </div>
 
           <div class="prompt-card">
-            <p>Tap the frame above to open the camera</p>
-            <div class="device-tag">USING CAMERA SENSOR</div>
+            <p>{{ isLaserReady ? 'READY: PRESS DEVICE SCAN BUTTON' : 'Tap the frame above to activate sensor' }}</p>
+            <div class="device-tag" :class="{'active-tag': isLaserReady}">
+              {{ isLaserReady ? 'SENSOR ACTIVE' : 'WAITING FOR ACTIVATION' }}
+            </div>
+
+            <!-- Secondary Option for Standard Mobile Users -->
+            <ion-button v-if="isLaserReady" fill="clear" style="color: #60a5fa;" class="camera-link" @click.stop="startCameraScan">
+               <ion-icon :icon="cameraOutline" slot="start"></ion-icon>
+               Use Phone Camera instead
+            </ion-button>
           </div>
         </template>
 
@@ -62,95 +73,79 @@
           <div class="result-card">
             <!-- Product Result Format -->
             <template v-if="currentStep === 'PRODUCT'">
- <div class="info-row-inline">
-               <div class="info-row">
-                <span class="info-label">Name</span>
-                <span class="info-value">{{ scannedResult.PRODUCT_NAME }}</span>
-              </div>
-
-               <div class="info-col right-align">
+              <div class="info-row-inline">
+                <div class="info-row">
+                  <span class="info-label">Name</span>
+                  <span class="info-value">{{ scannedResult.PRODUCT_NAME }}</span>
+                </div>
+                <div class="info-col right-align">
                   <span class="info-label">Part No</span>
                   <span class="info-value highlight-part">{{ scannedResult.PART_NO }}</span>
                 </div>
-
-                </div>
+              </div>
               <div class="info-row">
                 <span class="info-label">Category</span>
                 <span class="info-value">{{ scannedResult.PRODUCT_CATEGORY }}</span>
               </div>
-
-               <div class="info-row">
-        <span class="info-label">Available Qty</span>
-        <span class="info-value">{{ scannedResult.AVAILABLE_QTY }}</span>
-      </div>
-    
-
               <div class="info-row">
-                  <span class="info-label">QTY WAS IN HAND</span>
-                  <span class="info-value">{{ scannedResult.QTY_WAS_IN_HAND }}</span>
-                </div>
-
-               
-       <div class="info-row">
-                  <span class="info-label">Expiry Date</span>
-                  <div class="expiry-wrapper">
+                <span class="info-label">Available Qty</span>
+                <span class="info-value">{{ scannedResult.AVAILABLE_QTY }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">QTY WAS IN HAND</span>
+                <span class="info-value">{{ scannedResult.QTY_WAS_IN_HAND }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Expiry Date</span>
+                <div class="expiry-wrapper">
                   <span class="info-value">{{ scannedResult.EXPIRY_DATE === 'null' ? 'N/A' : scannedResult.EXPIRY_DATE }}</span>
                   <span v-if="daysLeft !== null" 
                         class="days-badge" 
                         :class="{'expired': daysLeft < 0, 'warning': daysLeft >= 0 && daysLeft <= 30, 'safe': daysLeft > 30}">
                     {{ daysLeft < 0 ? 'EXPIRED' : `${daysLeft} DAYS LEFT` }}
                   </span>
-                  </div>
                 </div>
-
+              </div>
             </template>
 
             <!-- Bin/Pallet Result Format -->
             <template v-else>
-
-             <div class="location-outer-box">
+              <div class="location-outer-box">
                 <div class="loc-row">
                   <span class="loc-label">Warehouse</span>
                   <span class="loc-value">{{ scannedResult.WAREHOUSE_NAME }}</span>
                 </div>
-                
                 <div class="loc-divider"></div>
-                
                 <div class="loc-row">
                   <span class="loc-label">Bin Location</span>
                   <span class="loc-value">{{ scannedResult.BIN_NAME }}</span>
                 </div>
               </div>
-
-               <div class="info-row-inline">
-              <div class="info-row">
-                <span class="info-label">Product Name</span>
-                <span class="info-value">{{ scannedResult.PRODUCT_NAME }}</span>
-              </div>
-
-               <div class="info-col right-align">
+              <div class="info-row-inline">
+                <div class="info-row">
+                  <span class="info-label">Product Name</span>
+                  <span class="info-value">{{ scannedResult.PRODUCT_NAME }}</span>
+                </div>
+                <div class="info-col right-align">
                   <span class="info-label">Part No</span>
                   <span class="info-value highlight-part">{{ scannedResult.PART_NO }}</span>
                 </div>
-
               </div>
-
-               <div class="info-row">
+              <div class="info-row">
                 <span class="info-label">Available Qty</span>
                 <span class="info-value">{{ scannedResult.AVAILABLE_QTY }}</span>
               </div>
-
-               <div class="info-row">
+              <div class="info-row">
                 <span class="info-label">Batch No</span>
                 <span class="info-value">{{ scannedResult.BATCH_NO }}</span>
               </div>
-
             </template>
           </div>
 
           <!-- Actions -->
           <div class="action-buttons">
             <button class="btn-rescan" @click="rescan">RESCAN</button>
+            <button class="btn-confirm" @click.stop="confirmResult" style="margin-left: 10px;">CONFIRM</button>
           </div>
         </template>
 
@@ -162,17 +157,26 @@
           EXIT SCANNER
         </button>
       </footer>
+       
+      <!-- THE HIDDEN FIX: Identical CSS and properties to Code 1 -->
+      <input 
+        ref="machineInputCatcher" 
+        type="text"  
+        class="hidden-machine-catcher" 
+        @keyup.enter="handleMachineScan" 
+        @blur="refocusIfActive" 
+      />
     </div>
   </Master>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, nextTick,onMounted  } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { IonIcon } from '@ionic/vue';
+import { IonIcon, IonButton } from '@ionic/vue';
 import { 
   chevronBackOutline, archiveOutline, 
-  layersOutline, cubeOutline 
+  layersOutline, cubeOutline, cameraOutline 
 } from 'ionicons/icons';
 import Master from "../layouts/Master.vue";
 import pick from "@/services/pick";
@@ -182,20 +186,22 @@ import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 
 export default defineComponent({
   name: "BinInformationScan",
-  components: { Master, IonIcon },
+  components: { Master, IonIcon, IonButton },
   setup() {
     const route = useRoute();
     const router = useRouter();
 
-    // const currentStep = computed(() => (route.query.step as string) || 'BIN');
-      const currentStep = computed(() => {
+    const currentStep = computed(() => {
       const step = route.query.step as string;
       return step ? step.toUpperCase() : 'BIN';
     });
 
-    // Refs to hold the scanned data before routing
     const scannedResult = ref<any>(null);
     const scannedBarcode = ref<string>("");
+
+    // Machine Laser variables
+    const isLaserReady = ref(false);
+    const machineInputCatcher = ref<HTMLInputElement | null>(null);
 
     const getStepLabel = computed(() => {
       if (currentStep.value === 'BIN') return 'Bin';
@@ -209,7 +215,7 @@ export default defineComponent({
       return cubeOutline;
     });
 
-  const daysLeft = computed(() => {
+    const daysLeft = computed(() => {
       const rawDate = scannedResult.value?.EXPIRY_DATE;
       
       if (!rawDate || rawDate === 'null' || rawDate === 'N/A') {
@@ -218,22 +224,16 @@ export default defineComponent({
 
       let expDate;
 
-      // Check if date is in DD-MM-YYYY format (e.g. 30-04-2026)
       if (/^\d{2}-\d{2}-\d{4}$/.test(rawDate)) {
         const [day, month, year] = rawDate.split('-');
-        // JS Date uses 0-indexed months (0 = Jan, 1 = Feb, etc.)
         expDate = new Date(Number(year), Number(month) - 1, Number(day));
       } else {
-        // Fallback for standard date formats like YYYY-MM-DD
         expDate = new Date(rawDate);
       }
 
-      // If it's still an invalid date, stop here
       if (isNaN(expDate.getTime())) return null;
 
       const today = new Date();
-      
-      // Reset times to midnight to calculate exact full days difference
       today.setHours(0, 0, 0, 0);
       expDate.setHours(0, 0, 0, 0);
       
@@ -241,76 +241,118 @@ export default defineComponent({
       return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
     });
 
+    onMounted(() => {
+      setTimeout(() => {
+        activateMachineSensor();
+      }, 400);
+    });
 
-    // 1. Function to open the mobile camera and scan
+    // 1. Activate Machine Sensor manually via user gesture (Tap)
+    const activateMachineSensor = () => {
+      isLaserReady.value = true;
+      nextTick(() => {
+        if (machineInputCatcher.value) {
+          machineInputCatcher.value.focus();
+        }
+      });
+    };
+
+    // 2. Refocus guard: Keeps focus on invisible input if user taps empty screen
+    const refocusIfActive = () => {
+      if (isLaserReady.value && !scannedResult.value) {
+        setTimeout(() => machineInputCatcher.value?.focus(), 150);
+      }
+    };
+
+    // 3. Handle Hardware Keyboard Wedge Scan
+    const handleMachineScan = async (event: any) => {
+      const val = event.target.value?.trim().toUpperCase();
+      if (val) {
+        isLaserReady.value = false;
+        if (event.target) {
+        event.target.blur();
+       } 
+        await processScannedValue(val);
+        event.target.value = ""; // Clear input
+      }
+    };
+
+    // 4. Fallback Camera plugin for normal phones
     const startCameraScan = async () => {
-      // NOTE: Uncomment these lines to test in a browser without a real device camera
-      //  await processScannedValue("N05-01-03");
-      //  return;
+      isLaserReady.value = false; // Turn off hardware UI
 
       console.log('startCameraScan triggered');
       try {
-        // Request camera permissions first
-        const { camera } = await BarcodeScanner.requestPermissions();
-        if (camera !== 'granted' && camera !== 'limited') {
+        let status = await BarcodeScanner.checkPermissions();
+        if (status.camera !== 'granted') {
+          status = await BarcodeScanner.requestPermissions();
+        }
+        if (status.camera !== 'granted' && status.camera !== 'limited') {
           alert('Camera permission is required to scan barcodes.');
           return;
         }
 
+        try {
+          const { supported } = await BarcodeScanner.isSupported();
+          if (supported) {
+            await BarcodeScanner.installGoogleBarcodeScannerModule();
+          }
+        } catch (moduleError) {
+          console.log("Module check skipped (normal on iOS)");
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 200));
         const result = await BarcodeScanner.scan();
-        console.log(result, 'resultValue');
         if (result && result.barcodes && result.barcodes.length > 0) {
           const scannedValue = result.barcodes[0].rawValue;
-          await processScannedValue(scannedValue);
+          await processScannedValue(scannedValue); 
         }
       } catch (error) {
         console.error("Camera scan failed:", error);
         alert("Failed to open camera. Are you running this on a physical mobile device?");
       }
-    };
+    }
 
-    // 2. Fetch the data based on scan
+    // Process the string from EITHER hardware or software scan
     const processScannedValue = async (val: string) => {
       val = val.trim().toUpperCase();
       console.log("Scanned Value:", val, "Current Step:", currentStep.value);
       if (!val) return;
 
       if (currentStep.value === 'PRODUCT') {
-          alert(`FINAL SCANNED VALUE:\n${val}`);
         try {
           const response = await pick.productInformationSearch(val);
-          console.log(response.response[0]);
           if (response?.response?.length > 0) {
             scannedResult.value = response.response[0];
-             scannedBarcode.value = val;
+            scannedBarcode.value = val;
           } else {
             alert('Product barcode not found in system. Please try again.');
+            activateMachineSensor(); // Bring focus back so they can shoot again
           }
         } catch (error) {
           console.error(error);
           alert('Error verifying Product. Please check connection and try again.');
+          activateMachineSensor();
         }
       } 
       else if (currentStep.value === 'BIN' || currentStep.value === 'PALLET') {
         try {
           const response = await pick.binLocationSearch(val);
-          console.log(response, 'response');
-          
           if (response?.response?.length > 0) {
-             // Save to ref instead of leaving page immediately
             scannedResult.value = response.response[0];
             scannedBarcode.value = val;
           } else {
             alert(`Validation Failed: ${currentStep.value} barcode not found in system.`);
+            activateMachineSensor();
           }
         } catch (error) {
           console.error(error);
           alert(`Error verifying ${currentStep.value}. Please check connection and try again.`);
+          activateMachineSensor();
         }
       }
     };
 
-    // 3. User verifies data visually, clicks Confirm
     const confirmResult = () => {
       if (currentStep.value === 'PRODUCT') {
         localStorage.setItem(`draft_product`, scannedBarcode.value);
@@ -321,10 +363,10 @@ export default defineComponent({
       router.back();
     };
 
-    // 4. User realizes it's the wrong item, resets UI
     const rescan = () => {
       scannedResult.value = null;
       scannedBarcode.value = "";
+      activateMachineSensor(); // Automatically focus so they can immediately shoot laser
     };
 
     return {
@@ -336,7 +378,13 @@ export default defineComponent({
       scannedResult, 
       confirmResult, 
       rescan,
-      daysLeft 
+      daysLeft,
+      machineInputCatcher,
+      activateMachineSensor,
+      isLaserReady,
+      refocusIfActive,
+      handleMachineScan,
+      cameraOutline
     };
   }
 });
@@ -378,25 +426,24 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   padding: 6px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
-  background: #10b981;
   border-radius: 50%;
-  box-shadow: 0 0 8px #10b981;
+  transition: 0.3s ease;
 }
 
 .status-text {
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: #10b981;
+  transition: 0.3s ease;
 }
 
 /* Main Workspace */
@@ -436,11 +483,17 @@ export default defineComponent({
   position: relative;
   margin-bottom: 40px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.3s;
+  border-radius: 24px;
 }
 
 .scanner-viz-container:active {
   transform: scale(0.95);
+}
+
+.scanner-viz-container.laser-active .scanner-frame-mini {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
 }
 
 .scanner-frame-mini {
@@ -453,6 +506,8 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
+  border: 2px solid transparent;
+  transition: 0.3s ease;
 }
 
 /* Tech Brackets */
@@ -471,7 +526,16 @@ export default defineComponent({
   font-size: 60px;
   color: #334155;
   z-index: 1;
+  transition: 0.3s ease;
 }
+
+.pulse-icon { 
+  opacity: 1 !important; 
+  color: #3b82f6 !important; 
+  animation: iconPulse 1s infinite; 
+}
+@keyframes iconPulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
 
 /* Modern Laser */
 .laser-scanner {
@@ -512,21 +576,36 @@ export default defineComponent({
 
 .prompt-card p {
   color: #94a3b8;
-  font-size: 15px;
+  font-size: 13px;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .device-tag {
   display: inline-block;
   background: #1e293b;
-  color: #3b82f6;
+  color: #64748b;
   font-size: 10px;
   font-weight: 900;
   padding: 8px 16px;
   border-radius: 8px;
   letter-spacing: 1px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  transition: 0.3s ease;
 }
+.device-tag.active-tag {
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.camera-link {
+  margin-top: 15px;
+  font-size: 11px;
+  font-weight: 800;
+  width: 100%;
+}
+
 
 /* ==========================================================
    Result Card Styles
@@ -737,5 +816,36 @@ display: flex;
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444; /* Red */
   border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* THE FIX: Replaced auto-focus code block with the proven version from Code 1 */
+.hidden-machine-catcher {
+  position: fixed;
+  top: -1000px;
+  left: -1000px;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+ .manual-input-catcher {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 300px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #3b82f6;
+  color: #10b981;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  text-align: center;
+  outline: none;
+  z-index: 100;
+  /* This ensures it only shows when the user is actually scanning */
+  display: v-bind(isLaserReady && !scannedResult ? 'block' : 'none');
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
 }
 </style>

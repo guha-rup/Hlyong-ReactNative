@@ -157,11 +157,18 @@ export default defineComponent({
           localStorage.setItem("userInfo", JSON.stringify(response));
           localStorage.setItem("userRole", response.SystemRoleName);
           
+          // let role = response.SystemRoleName;
+          // if (role === "Driver") {
+          //   window.location.href = "/checkin";
+          // } else if (role === "Store Man") {
+          //   window.location.href = "/checkin";
+          // }
+
           let role = response.SystemRoleName;
-          if (role === "Driver") {
-            window.location.href = "/checkin";
-          } else if (role === "Store Man") {
-            window.location.href = "/checkin";
+          if (role === "Driver" || role === "Store Man") {
+            this.$router.replace("/checkIn");
+          } else {
+             this.$router.replace("/dashboard");
           }
           const event = new Event('myDataUpdated');
           document.dispatchEvent(event);
@@ -175,14 +182,14 @@ export default defineComponent({
     Terms() { this.$router.push('/otp') },
     DataProcessing() { this.$router.push('/resetpassword') },
   },
-  mounted() {
-    const token = localStorage.getItem('permit');
-    const role = localStorage.getItem('userRole');
-    if (token && role) {
-      if (role === 'Driver') this.$router.replace('/deliveryjob');
-      else if (role === 'Store Man') this.$router.replace('/pick');
-    }
-  }
+  // mounted() {
+  //   const token = localStorage.getItem('permit');
+  //   const role = localStorage.getItem('userRole');
+  //   if (token && role) {
+  //     if (role === 'Driver') this.$router.replace('/checkin');
+  //     else if (role === 'Store Man') this.$router.replace('/checkin');
+  //   }
+  // }
 });
 </script>
 
